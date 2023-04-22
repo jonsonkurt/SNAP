@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:snap/view/forgot_password_page.dart';
-import 'package:snap/view/home_page.dart';
-import 'package:snap/view/login_page.dart';
 import 'analytics_page.dart';
 import 'bottom_navigation_bar.dart';
+import 'home_page.dart';
+import 'plants_crops_page.dart';
+import 'profile_page.dart';
 
 class MyScreen extends StatefulWidget {
   const MyScreen({super.key});
@@ -52,9 +52,9 @@ class _MyScreenState extends State<MyScreen> {
       case 1:
         return const AnalyticsPage();
       case 2:
-        return const ForgotPasswordPage();
+        return const PlantsCropsPage();
       case 3:
-        return const LoginPage();
+        return const ProfilePage();
       default:
         return Container();
     }
