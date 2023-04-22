@@ -6,6 +6,8 @@ class DatabaseHelper {
 
   static Database? _database;
   static int? loggedInUserId;
+  static String? loggedInUserName;
+  static String? loggedInUserEmail;
 
   DatabaseHelper._init();
 
@@ -30,6 +32,22 @@ class DatabaseHelper {
         name TEXT,
         email TEXT,
         password TEXT
+      )
+    ''');
+    await db.execute('''
+      CREATE TABLE recordings(
+        id INTEGER PRIMARY KEY,
+        user_id TEXT,
+        date TEXT,
+        time TEXT,
+        ph TEXT,
+        n TEXT,
+        p TEXT,
+        k TEXT,
+        humidity TEXT,
+        temperature TEXT,
+        plant TEXT,
+        crop TEXT
       )
     ''');
   }
@@ -97,5 +115,38 @@ class DatabaseHelper {
     );
 
     return rowsAffected > 0;
+  }
+
+  Future<int> insertRecording({
+    required String userId,
+    required String date,
+    required String time,
+    required String ph,
+    required String n,
+    required String p,
+    required String k,
+    required String humidity,
+    required String temperature,
+    required String plant,
+    required String crop,
+  }) async {
+    final db = await database;
+
+    return await db.insert(
+      'recordings',
+      {
+        'user_id': userId,
+        'date': date,
+        'time': time,
+        'ph': ph,
+        'n': n,
+        'p': p,
+        'k': k,
+        'humidity': humidity,
+        'temperature': temperature,
+        'plant': plant,
+        'crop': crop,
+      },
+    );
   }
 }
