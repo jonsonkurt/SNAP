@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:snap/model/database_helper.dart';
 
 class AnalyticsPage extends StatefulWidget {
   const AnalyticsPage({Key? key}) : super(key: key);
@@ -9,20 +10,29 @@ class AnalyticsPage extends StatefulWidget {
 }
 
 class _AnalyticsPageState extends State<AnalyticsPage> {
+  List<Map<String, dynamic>> recordings = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _getLatestRecording('${DatabaseHelper.loggedInUserId}');
+  }
+
+  Future<void> _getLatestRecording(String userID) async {
+    final db = await DatabaseHelper.instance.database;
+    final allRows = await db.rawQuery('''
+    SELECT r.*, u.name 
+    FROM recordings r 
+    INNER JOIN users u ON r.user_id = u.id
+    WHERE r.user_id = ?
+    ORDER BY r.id DESC
+  ''', [userID]);
+    setState(() {
+      recordings = allRows;
+    });
+  }
+
   List<Map<String, dynamic>> recommendations = [
-    // {
-    //   'image': 'assets/images/tomato.png',
-    //   'title': 'Tomato',
-    //   'date': '22-04-2023',
-    //   'time': '13:15',
-    //   'ph': '8.5',
-    //   'npk': '14, 13, 10 (%)',
-    //   'humidity': '60%',
-    //   'temperature': '22°C',
-    //   'plants': 'Tomato and Wheat',
-    //   'plant': 'Tomato',
-    //   'crop': 'Wheat',
-    // },
     {
       'image': 'assets/images/avocado.png',
       'title': 'Avocado',
@@ -144,7 +154,9 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                               Align(
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                  recommendations[0]['ph'],
+                                  recordings.isNotEmpty
+                                      ? recordings[0]['ph']
+                                      : '-',
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 30,
@@ -192,7 +204,9 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                               Align(
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                  recommendations[0]['npk'],
+                                  recordings.isNotEmpty
+                                      ? '${recordings[0]['n']}, ${recordings[0]['p']}, ${recordings[0]['k']} (%)'
+                                      : '-',
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 18,
@@ -248,7 +262,9 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                               Align(
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                  recommendations[0]['humidity'],
+                                  recordings.isNotEmpty
+                                      ? recordings[0]['humidity']
+                                      : '-',
                                   style: const TextStyle(
                                     //color: Colors.white,
                                     fontSize: 30,
@@ -296,7 +312,9 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                               Align(
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                  recommendations[0]['temperature'],
+                                  recordings.isNotEmpty
+                                      ? recordings[0]['temperature']
+                                      : '-',
                                   style: const TextStyle(
                                     //color: Colors.white,
                                     fontSize: 25,
@@ -366,7 +384,9 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                                     Align(
                                       alignment: Alignment.centerLeft,
                                       child: Text(
-                                        recommendations[0]['plant'],
+                                        recordings.isNotEmpty
+                                            ? recordings[0]['plant']
+                                            : '-',
                                         style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 25,
@@ -393,7 +413,9 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                                   Align(
                                     alignment: Alignment.centerLeft,
                                     child: Text(
-                                      recommendations[0]['crop'],
+                                      recordings.isNotEmpty
+                                          ? recordings[0]['crop']
+                                          : '-',
                                       style: const TextStyle(
                                         color: Colors.white,
                                         fontSize: 25,

@@ -47,7 +47,8 @@ class DatabaseHelper {
         humidity TEXT,
         temperature TEXT,
         plant TEXT,
-        crop TEXT
+        crop TEXT,
+        image TEXT
       )
     ''');
   }
@@ -129,6 +130,7 @@ class DatabaseHelper {
     required String temperature,
     required String plant,
     required String crop,
+    String? image,
   }) async {
     final db = await database;
 
@@ -146,6 +148,7 @@ class DatabaseHelper {
         'temperature': temperature,
         'plant': plant,
         'crop': crop,
+        'image': 'assets/images/${plant.toLowerCase()}.png',
       },
     );
   }

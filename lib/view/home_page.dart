@@ -12,6 +12,28 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  List<Map<String, dynamic>> recordings = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _getAllRecordings('${DatabaseHelper.loggedInUserId}');
+  }
+
+  Future<void> _getAllRecordings(String userID) async {
+    final db = await DatabaseHelper.instance.database;
+    final allRows = await db.rawQuery('''
+    SELECT r.*, u.name 
+    FROM recordings r 
+    INNER JOIN users u ON r.user_id = u.id
+    WHERE r.user_id = ?
+    ORDER BY r.id DESC
+  ''', [userID]);
+    setState(() {
+      recordings = allRows;
+    });
+  }
+
   List<Map<String, dynamic>> recommendations = [
     {
       'image': 'assets/images/tomato.png',
@@ -125,7 +147,7 @@ class _HomePageState extends State<HomePage> {
                         child: ListView.builder(
                           padding: const EdgeInsets.only(right: 5),
                           scrollDirection: Axis.horizontal,
-                          itemCount: recommendations.length,
+                          itemCount: recordings.length,
                           itemBuilder: (BuildContext context, int index) {
                             return Padding(
                               padding: const EdgeInsets.only(right: 20),
@@ -172,8 +194,7 @@ class _HomePageState extends State<HomePage> {
                                                   ),
                                                 ),
                                                 Text(
-                                                  recommendations[index]
-                                                      ['date'],
+                                                  recordings[index]['date'],
                                                   style: TextStyle(
                                                     fontWeight:
                                                         FontWeight.normal,
@@ -193,8 +214,7 @@ class _HomePageState extends State<HomePage> {
                                                   ),
                                                 ),
                                                 Text(
-                                                  recommendations[index]
-                                                      ['time'],
+                                                  recordings[index]['time'],
                                                   style: TextStyle(
                                                     fontWeight:
                                                         FontWeight.normal,
@@ -214,7 +234,7 @@ class _HomePageState extends State<HomePage> {
                                                   ),
                                                 ),
                                                 Text(
-                                                  recommendations[index]['ph'],
+                                                  recordings[index]['ph'],
                                                   style: TextStyle(
                                                     fontWeight:
                                                         FontWeight.normal,
@@ -234,7 +254,7 @@ class _HomePageState extends State<HomePage> {
                                                   ),
                                                 ),
                                                 Text(
-                                                  recommendations[index]['npk'],
+                                                  "${recordings[index]['n']}, ${recordings[index]['p']}, ${recordings[index]['k']} (%)",
                                                   style: TextStyle(
                                                     fontWeight:
                                                         FontWeight.normal,
@@ -254,8 +274,7 @@ class _HomePageState extends State<HomePage> {
                                                   ),
                                                 ),
                                                 Text(
-                                                  recommendations[index]
-                                                      ['humidity'],
+                                                  recordings[index]['humidity'],
                                                   style: TextStyle(
                                                     fontWeight:
                                                         FontWeight.normal,
@@ -275,7 +294,7 @@ class _HomePageState extends State<HomePage> {
                                                   ),
                                                 ),
                                                 Text(
-                                                  recommendations[index]
+                                                  recordings[index]
                                                       ['temperature'],
                                                   style: TextStyle(
                                                     fontWeight:
@@ -296,8 +315,7 @@ class _HomePageState extends State<HomePage> {
                                                   ),
                                                 ),
                                                 Text(
-                                                  recommendations[index]
-                                                      ['plants'],
+                                                  "${recordings[index]['plant']} and ${recordings[index]['crop']}",
                                                   style: TextStyle(
                                                     fontWeight:
                                                         FontWeight.normal,
@@ -336,7 +354,7 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                       Center(
                                         child: Image.asset(
-                                          recommendations[index]['image'],
+                                          recordings[index]['image'],
                                           height: 170,
                                           width: 170,
                                         ),
@@ -344,7 +362,8 @@ class _HomePageState extends State<HomePage> {
                                       Align(
                                         alignment: Alignment.bottomCenter,
                                         child: Text(
-                                          recommendations[index]['title'],
+                                          //recommendations[index]['title'],
+                                          '${recordings[index]['plant']}',
                                           style: TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.bold,
