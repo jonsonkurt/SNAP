@@ -49,6 +49,20 @@ class SignUpPage extends StatelessWidget {
                         borderSide: BorderSide(color: Colors.white),
                       ),
                       border: OutlineInputBorder(),
+                      hintText: 'Enter your name',
+                      labelText: 'Name',
+                      labelStyle: TextStyle(color: Colors.white),
+                      hintStyle: TextStyle(color: Colors.green),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    style: const TextStyle(color: Colors.white),
+                    decoration: const InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                      ),
+                      border: OutlineInputBorder(),
                       hintText: 'Enter your email',
                       labelText: 'Email',
                       labelStyle: TextStyle(color: Colors.white),
