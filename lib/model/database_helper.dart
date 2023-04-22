@@ -67,4 +67,34 @@ class DatabaseHelper {
 
     return result.isNotEmpty;
   }
+
+  Future<bool> updatePassword(
+      String email, String newPassword, String confirmNewPassword) async {
+    final db = await database;
+
+    final result = await db.query(
+      'users',
+      where: 'email = ?',
+      whereArgs: [email],
+    );
+
+    if (result.isEmpty) {
+      return false;
+    }
+
+    final user = result.first;
+
+    if (newPassword != confirmNewPassword) {
+      return false;
+    }
+
+    final rowsAffected = await db.update(
+      'users',
+      {'password': newPassword},
+      where: 'id = ?',
+      whereArgs: [user['id']],
+    );
+
+    return rowsAffected > 0;
+  }
 }
