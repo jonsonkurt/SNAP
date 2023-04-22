@@ -25,6 +25,17 @@ class _HomePageState extends State<HomePage> {
       'plants': 'Tomato and Wheat',
     },
     {
+      'image': 'assets/images/banana.png',
+      'title': 'Banana',
+      'date': '23-04-2023',
+      'time': '14:30',
+      'ph': '6.5',
+      'npk': '10, 10, 10 (%)',
+      'humidity': '70%',
+      'temperature': '20°C',
+      'plants': 'Banana and Beetroot',
+    },
+    {
       'image': 'assets/images/avocado.png',
       'title': 'Avocado',
       'date': '23-04-2023',
