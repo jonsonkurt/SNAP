@@ -149,4 +149,6 @@ class DatabaseHelper {
       },
     );
   }
+
+  queryAllRows() {}
 }
