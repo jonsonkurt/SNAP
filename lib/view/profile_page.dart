@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'welcome_page.dart';
+//import 'package:snap/model/database_helper.dart';
+
+//${DatabaseHelper.loggedInUserId}
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -17,6 +20,7 @@ class _ProfilePageState extends State<ProfilePage> {
     },
     // add more items here...
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

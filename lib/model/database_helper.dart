@@ -5,6 +5,7 @@ class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._init();
 
   static Database? _database;
+  static int? loggedInUserId;
 
   DatabaseHelper._init();
 
