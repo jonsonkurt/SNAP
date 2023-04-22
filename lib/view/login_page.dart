@@ -155,7 +155,11 @@ class _LoginPageState extends State<LoginPage> {
                                   final Map<String, dynamic> user = result
                                       .firstWhere((u) => u['email'] == email);
                                   int userId = user['id'];
+                                  String userName = user['name'];
+                                  String userEmail = user['email'];
                                   DatabaseHelper.loggedInUserId = userId;
+                                  DatabaseHelper.loggedInUserName = userName;
+                                  DatabaseHelper.loggedInUserEmail = userEmail;
                                   Navigator.push(
                                     context,
                                     PageRouteBuilder(

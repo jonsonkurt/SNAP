@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:snap/model/database_helper.dart';
 import 'welcome_page.dart';
 //import 'package:snap/model/database_helper.dart';
 
@@ -15,8 +16,8 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   List<Map<String, dynamic>> accounts = [
     {
-      'name': 'Jairo Afable',
-      'email': 'jairojoaquinafable@gmail.com',
+      'name': '${DatabaseHelper.loggedInUserName}',
+      'email': '${DatabaseHelper.loggedInUserEmail}',
     },
     // add more items here...
   ];
