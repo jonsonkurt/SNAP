@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:snap/view/my_screen.dart';
+import 'admin_page.dart';
 import 'signup_page.dart';
 import 'forgot_password_page.dart';
 import 'package:snap/model/database_helper.dart';
@@ -148,8 +149,16 @@ class _LoginPageState extends State<LoginPage> {
                                 String password = passwordController.text;
                                 bool isUserExist = await DatabaseHelper.instance
                                     .isUserExist(email, password);
-
-                                if (isUserExist) {
+                                if (email == "admin" && password == "admin") {
+                                  emailController.text = '';
+                                  passwordController.text = '';
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const AdminPage()),
+                                  );
+                                } else if (isUserExist) {
                                   final List<Map<String, dynamic>> result =
                                       await DatabaseHelper.instance.getUsers();
                                   final Map<String, dynamic> user = result
