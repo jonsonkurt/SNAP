@@ -107,7 +107,6 @@ class _SignUpPageState extends State<SignUpPage> {
                           const SizedBox(height: 20),
                           TextFormField(
                             controller: passwordController,
-                            obscureText: true,
                             style: const TextStyle(color: Colors.white),
                             decoration: const InputDecoration(
                               enabledBorder: OutlineInputBorder(
@@ -129,7 +128,6 @@ class _SignUpPageState extends State<SignUpPage> {
                           const SizedBox(height: 20),
                           TextFormField(
                             controller: confirmPasswordController,
-                            obscureText: true,
                             style: const TextStyle(color: Colors.white),
                             decoration: const InputDecoration(
                               enabledBorder: OutlineInputBorder(
@@ -166,6 +164,10 @@ class _SignUpPageState extends State<SignUpPage> {
                                 nameController.text = '';
                                 emailController.text = '';
                                 passwordController.text = '';
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text('Account created')),
+                                );
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
