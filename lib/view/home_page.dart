@@ -9,6 +9,31 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  List<Map<String, dynamic>> recommendations = [
+    {
+      'image': 'assets/images/tomato.png',
+      'title': 'Tomato',
+      'date': '22-04-2023',
+      'time': '13:15',
+      'ph': '7',
+      'npk': '14, 13, 10 (%)',
+      'humidity': '60%',
+      'temperature': '22°C',
+      'plants': 'Tomato and Wheat',
+    },
+    {
+      'image': 'assets/images/avocado.png',
+      'title': 'Avocado',
+      'date': '23-04-2023',
+      'time': '14:30',
+      'ph': '6.5',
+      'npk': '10, 10, 10 (%)',
+      'humidity': '70%',
+      'temperature': '20°C',
+      'plants': 'Avocado and Beetroot',
+    },
+    // add more items here...
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,7 +84,7 @@ class _HomePageState extends State<HomePage> {
                     const Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "Recommendation",
+                        "All Recommendations",
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 20,
@@ -70,7 +95,7 @@ class _HomePageState extends State<HomePage> {
                     const Align(
                       alignment: Alignment.centerLeft,
                       child: SizedBox(
-                        width: 156, // Set the width of the divider here
+                        width: 196, // Set the width of the divider here
                         child: Divider(
                           color: Colors.white,
                           thickness: 1,
@@ -81,78 +106,236 @@ class _HomePageState extends State<HomePage> {
                     const SizedBox(height: 5),
                     SizedBox(
                       height: 400,
-                      child: ListView(
-                        // This next line does the trick.
+                      width: MediaQuery.of(context).size.width,
+                      child: ListView.builder(
+                        padding: const EdgeInsets.only(right: 5),
                         scrollDirection: Axis.horizontal,
-                        children: <Widget>[
-                          Container(
-                            width: 250,
-                            padding: const EdgeInsets.all(15),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFa5885e),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Stack(
-                              children: [
-                                const Align(
-                                  alignment: Alignment.topRight,
-                                  child: Icon(Icons.more_horiz),
-                                ),
-                                Center(
-                                  child: Image.asset(
-                                    'assets/images/tomato.png',
-                                    height: 170,
-                                    width: 170,
-                                  ),
-                                ),
-                                const Align(
-                                  alignment: Alignment.bottomCenter,
-                                  child: Text(
-                                    'Tomato',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
+                        itemCount: recommendations.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 20),
+                            child: GestureDetector(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (_) => Theme(
+                                    data: Theme.of(context).copyWith(
+                                      dialogBackgroundColor: index % 2 == 0
+                                          ? const Color(0xFFa5885e)
+                                          : const Color(0xFFfed269),
+                                    ),
+                                    child: AlertDialog(
+                                      content: SizedBox(
+                                        height: 380,
+                                        child: Container(
+                                          padding: const EdgeInsets.all(15),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Align(
+                                                alignment: Alignment.topRight,
+                                                child: GestureDetector(
+                                                  onTap: () =>
+                                                      Navigator.of(context)
+                                                          .pop(),
+                                                  child: Icon(
+                                                    Icons.close,
+                                                    color: index % 2 == 0
+                                                        ? Colors.white
+                                                        : Colors.black,
+                                                  ),
+                                                ),
+                                              ),
+                                              Text(
+                                                'Date of Recording:',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: index % 2 == 0
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                                ),
+                                              ),
+                                              Text(
+                                                recommendations[index]['date'],
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.normal,
+                                                  color: index % 2 == 0
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 10),
+                                              Text(
+                                                'Time of Recording:',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: index % 2 == 0
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                                ),
+                                              ),
+                                              Text(
+                                                recommendations[index]['time'],
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.normal,
+                                                  color: index % 2 == 0
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 10),
+                                              Text(
+                                                'pH Value:',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: index % 2 == 0
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                                ),
+                                              ),
+                                              Text(
+                                                recommendations[index]['ph'],
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.normal,
+                                                  color: index % 2 == 0
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 10),
+                                              Text(
+                                                'NPK:',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: index % 2 == 0
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                                ),
+                                              ),
+                                              Text(
+                                                recommendations[index]['npk'],
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.normal,
+                                                  color: index % 2 == 0
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 10),
+                                              Text(
+                                                'Humidity:',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: index % 2 == 0
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                                ),
+                                              ),
+                                              Text(
+                                                recommendations[index]
+                                                    ['humidity'],
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.normal,
+                                                  color: index % 2 == 0
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 10),
+                                              Text(
+                                                'Temperature:',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: index % 2 == 0
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                                ),
+                                              ),
+                                              Text(
+                                                recommendations[index]
+                                                    ['temperature'],
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.normal,
+                                                  color: index % 2 == 0
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 10),
+                                              Text(
+                                                'Recommended Plant and Crop:',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: index % 2 == 0
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                                ),
+                                              ),
+                                              Text(
+                                                recommendations[index]
+                                                    ['plants'],
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.normal,
+                                                  color: index % 2 == 0
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                   ),
+                                );
+                              },
+                              child: Container(
+                                width: 250,
+                                padding: const EdgeInsets.all(15),
+                                decoration: BoxDecoration(
+                                  color: index % 2 == 0
+                                      ? const Color(0xFFa5885e)
+                                      : const Color(0xFFfed269),
+                                  borderRadius: BorderRadius.circular(20),
                                 ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: 20),
-                          Container(
-                            width: 250,
-                            padding: const EdgeInsets.all(15),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFfed269),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Stack(
-                              children: [
-                                const Align(
-                                  alignment: Alignment.topRight,
-                                  child: Icon(Icons.more_horiz),
-                                ),
-                                Center(
-                                  child: Image.asset(
-                                    'assets/images/eggplant.png',
-                                    height: 170,
-                                    width: 170,
-                                  ),
-                                ),
-                                const Align(
-                                  alignment: Alignment.bottomCenter,
-                                  child: Text(
-                                    'Eggplant',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
+                                child: Stack(
+                                  children: [
+                                    Align(
+                                      alignment: Alignment.topRight,
+                                      child: Icon(
+                                        Icons.more_horiz_rounded,
+                                        color: index % 2 == 0
+                                            ? Colors.white
+                                            : Colors.black,
+                                      ),
                                     ),
-                                  ),
+                                    Center(
+                                      child: Image.asset(
+                                        recommendations[index]['image'],
+                                        height: 170,
+                                        width: 170,
+                                      ),
+                                    ),
+                                    Align(
+                                      alignment: Alignment.bottomCenter,
+                                      child: Text(
+                                        recommendations[index]['title'],
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: index % 2 == 0
+                                              ? Colors.white
+                                              : Colors.black,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
+                              ),
                             ),
-                          ),
-                        ],
+                          );
+                        },
                       ),
                     ),
                   ],
