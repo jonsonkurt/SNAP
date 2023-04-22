@@ -34,7 +34,7 @@ class _RecordPageState extends State<RecordPage> {
       _date = formattedDate;
       _time = formattedTime;
       _phValue = '7';
-      _npk = '14, 13, 10 (5%)';
+      _npk = '14, 13, 10';
       _humidity = '60%';
       _temperature = '22';
       _recommendedCrop = 'Tomato and Wheat';
