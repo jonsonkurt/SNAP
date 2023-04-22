@@ -145,6 +145,7 @@ class _LoginPageState extends State<LoginPage> {
                           OutlinedButton(
                             onPressed: () async {
                               if (_formKey.currentState!.validate()) {
+                                FocusScope.of(context).unfocus();
                                 String email = emailController.text;
                                 String password = passwordController.text;
                                 bool isUserExist = await DatabaseHelper.instance
