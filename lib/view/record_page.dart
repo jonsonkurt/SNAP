@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:snap/model/database_helper.dart';
+import 'package:intl/intl.dart'; // Import the intl package
 
 class RecordPage extends StatefulWidget {
   const RecordPage({Key? key}) : super(key: key);
@@ -19,11 +21,18 @@ class _RecordPageState extends State<RecordPage> {
   bool _scanningComplete = false;
 
   Future<void> _scanSoilQualities() async {
+    // Get the current date and time
+    DateTime now = DateTime.now();
+
+    // Format the date and time as strings
+    String formattedDate = DateFormat('dd-MM-yyyy').format(now);
+    String formattedTime = DateFormat('HH:mm').format(now);
+
     // Implement soil scanning logic here
     // Once the soil scanning is complete, update the state with the results
     setState(() {
-      _date = '22-04-2023';
-      _time = '13:15';
+      _date = formattedDate;
+      _time = formattedTime;
       _phValue = '7';
       _npk = '14, 13, 10 (5%)';
       _humidity = '60%';
@@ -32,6 +41,20 @@ class _RecordPageState extends State<RecordPage> {
       _scanningComplete =
           true; // Set the variable to true when scanning is complete
     });
+    DatabaseHelper databaseHelper = DatabaseHelper.instance;
+    await databaseHelper.insertRecording(
+      userId: '${DatabaseHelper.loggedInUserId}',
+      date: _date!,
+      time: _time!,
+      ph: _phValue!,
+      n: _npk!.split(',')[0],
+      p: _npk!.split(',')[1],
+      k: _npk!.split(',')[2],
+      humidity: _humidity!,
+      temperature: '${_temperature!}°C',
+      plant: _recommendedCrop!.split(' and ')[0],
+      crop: _recommendedCrop!.split(' and ')[1],
+    );
   }
 
   @override
