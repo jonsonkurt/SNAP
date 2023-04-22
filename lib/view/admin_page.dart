@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:snap/model/database_helper.dart';
-import 'package:snap/view/welcome_page.dart';
 
 class AdminPage extends StatefulWidget {
   const AdminPage({super.key});
