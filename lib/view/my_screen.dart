@@ -4,6 +4,7 @@ import 'bottom_navigation_bar.dart';
 import 'home_page.dart';
 import 'plants_crops_page.dart';
 import 'profile_page.dart';
+import 'record_page.dart';
 
 class MyScreen extends StatefulWidget {
   const MyScreen({super.key});
@@ -28,7 +29,28 @@ class _MyScreenState extends State<MyScreen> {
       body: _buildScreen(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Add code to perform a primary action related to the current screen
+          // Code to add new recording
+          Navigator.push(
+            context,
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  const RecordPage(),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                var begin = const Offset(0.0, 1.0);
+                var end = Offset.zero;
+                var curve = Curves.ease;
+
+                var tween = Tween(begin: begin, end: end)
+                    .chain(CurveTween(curve: curve));
+
+                return SlideTransition(
+                  position: animation.drive(tween),
+                  child: child,
+                );
+              },
+            ),
+          );
         },
         backgroundColor: const Color(0xFFa5885e),
         child: const Icon(Icons.add),
