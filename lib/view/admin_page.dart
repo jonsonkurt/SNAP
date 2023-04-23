@@ -85,6 +85,10 @@ class _AdminPageState extends State<AdminPage> {
                             style: const TextStyle(fontSize: 14.0),
                           ),
                           Text(
+                            'Hmd: ${recording['humidity']}',
+                            style: const TextStyle(fontSize: 14.0),
+                          ),
+                          Text(
                             'Temp: ${recording['temperature']}',
                             style: const TextStyle(fontSize: 14.0),
                           ),
