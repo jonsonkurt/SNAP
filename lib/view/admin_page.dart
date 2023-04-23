@@ -24,7 +24,7 @@ class _AdminPageState extends State<AdminPage> {
       SELECT r.*, u.name 
       FROM recordings r 
       INNER JOIN users u ON r.user_id = u.id
-      ORDER BY u.name ASC, r.date DESC, r.time DESC
+      ORDER BY r.date DESC, r.time DESC
     ''');
     setState(() {
       recordings = allRows;
