@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -149,6 +151,36 @@ class DatabaseHelper {
         'plant': plant,
         'crop': crop,
         'image': 'assets/images/${plant.toLowerCase()}.png',
+      },
+    );
+  }
+
+  Future<int> plantValues({
+    required String plantCrop,
+    required double pHValueMin,
+    required double pHValueMax,
+    required int nitro,
+    required int phospo,
+    required int potass,
+    required double tempMin,
+    required double tempMax,
+    required int humidity,
+  }) async {
+    final db = await database;
+
+    return await db.insert(
+      'plant_Values',
+      {
+        'id INTEGER PRIMARY KEY,'
+        'plantCrop': plantCrop,
+        'pHValueMin': pHValueMin,
+        'pHValueMax': pHValueMax,
+        'nitro': nitro,
+        'phospo': phospo,
+        'potass': potass,
+        'tempMin': tempMin,
+        'tempMax': tempMax,
+        'humidity': humidity,
       },
     );
   }
