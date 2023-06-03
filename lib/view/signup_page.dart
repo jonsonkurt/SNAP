@@ -106,6 +106,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           ),
                           const SizedBox(height: 20),
                           TextFormField(
+                            obscureText: true,
                             controller: passwordController,
                             style: const TextStyle(color: Colors.white),
                             decoration: const InputDecoration(
@@ -127,6 +128,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           ),
                           const SizedBox(height: 20),
                           TextFormField(
+                            obscureText: true,
                             controller: confirmPasswordController,
                             style: const TextStyle(color: Colors.white),
                             decoration: const InputDecoration(
