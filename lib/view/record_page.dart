@@ -33,11 +33,11 @@ class _RecordPageState extends State<RecordPage> {
     setState(() {
       _date = formattedDate;
       _time = formattedTime;
-      _phValue = '6';
+      _phValue = '6.5';
       _npk = '14, 14, 14';
       _humidity = '95%';
-      _temperature = '25';
-      _recommendedCrop = 'Bukchoy and Garlic';
+      _temperature = '28';
+      _recommendedCrop = 'Grapes and Ginger';
       _scanningComplete =
           true; // Set the variable to true when scanning is complete
     });
