@@ -86,6 +86,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                             ),
                             const SizedBox(height: 20),
                             TextFormField(
+                              obscureText: true,
                               controller: newPasswordController,
                               style: const TextStyle(color: Colors.white),
                               decoration: const InputDecoration(
@@ -107,6 +108,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                             ),
                             const SizedBox(height: 20),
                             TextFormField(
+                              obscureText: true,
                               controller: confirmNewPasswordController,
                               style: const TextStyle(color: Colors.white),
                               decoration: const InputDecoration(
