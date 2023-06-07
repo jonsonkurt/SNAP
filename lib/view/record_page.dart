@@ -225,7 +225,7 @@ class _RecordPageState extends State<RecordPage> {
                   ),
                   const SizedBox(height: 10),
                   const Text(
-                    'Recommended Plant and Crop:',
+                    'Recommended Plant or Crop:',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.white,

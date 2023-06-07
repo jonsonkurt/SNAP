@@ -334,7 +334,7 @@ class _HomePageState extends State<HomePage> {
                                                         const SizedBox(
                                                             height: 10),
                                                         Text(
-                                                          'Recommended Plant and Crop:',
+                                                          'Recommended Plant or Crop:',
                                                           style: TextStyle(
                                                             fontWeight:
                                                                 FontWeight.bold,
