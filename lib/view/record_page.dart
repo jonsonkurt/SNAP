@@ -17,69 +17,88 @@ class _RecordPageState extends State<RecordPage> {
   String? _npk;
   String? _humidity;
   String? _temperature;
-  String? _recommendedCrop;
+  String? _recommendedPlant;
+  String? _suitablePlant;
+  String? _plantNames;
   bool _scanningComplete = false;
 
   Future<void> _scanSoilQualities() async {
-  // Get the current date and time
-  DateTime now = DateTime.now();
+    // Get the current date and time
+    DateTime now = DateTime.now();
 
-  // Format the date and time as strings
-  String formattedDate = DateFormat('dd-MM-yyyy').format(now);
-  String formattedTime = DateFormat('HH:mm').format(now);
+    // Format the date and time as strings
+    String formattedDate = DateFormat('dd-MM-yyyy').format(now);
+    String formattedTime = DateFormat('HH:mm').format(now);
 
-  // Implement soil scanning logic here
-  // Once the soil scanning is complete, update the state with the results
-  setState(() {
-    _date = formattedDate;
-    _time = formattedTime;
-    _phValue = '8';
-    _npk = '6, 8, 9';
-    _humidity = '70%';
-    _temperature = '28';
-    _scanningComplete = true; // Set the variable to true when scanning is complete
-  });
+    // Implement soil scanning logic here
+    // Once the soil scanning is complete, update the state with the results
+    setState(() {
+      _date = formattedDate;
+      _time = formattedTime;
+      _phValue = '7.0';
+      _npk = '14, 14, 14';
+      _humidity = '95';
+      _temperature = '32';
+      _scanningComplete = true; // Set the variable to true when scanning is complete
+    });
 
-  // Perform recommendation based on NPK and pH values
-  List<dynamic> recommendedPlants = [];
-  List<dynamic> suitablePlants = [];
+    // Perform recommendation based on NPK, pH, and humidity values
+    List<String> recommendedPlants = [];
+    List<String> suitablePlants = [];
 
-  for (List<dynamic> plantData in plantDatabase) {
-    double minPh = plantData[1];
-    double maxPh = plantData[2];
-    int minN = plantData[3];
-    int minP = plantData[4];
-    int minK = plantData[5];
+    for (List<dynamic> plantData in plantDatabase) {
+      double minPh = plantData[1];
+      double maxPh = plantData[2];
+      int N = plantData[3];
+      int P = plantData[4];
+      int K = plantData[5];
+      int minHumidity = plantData[8]; // Get the minimum required humidity
 
-    List<String> npkValues = _npk!.split(', ');
-    int scannedN = int.parse(npkValues[0]);
-    int scannedP = int.parse(npkValues[1]);
-    int scannedK = int.parse(npkValues[2]);
+      List<String> npkValues = _npk!.split(', ');
+      int scannedN = int.parse(npkValues[0]);
+      int scannedP = int.parse(npkValues[1]);
+      int scannedK = int.parse(npkValues[2]);
 
-    if (_phValue != null &&
-        double.parse(_phValue!) >= minPh &&
-        double.parse(_phValue!) <= maxPh &&
-        scannedN >= minN &&
-        scannedP >= minP &&
-        scannedK >= minK) {
-      recommendedPlants.add(plantData[0]);
+      if (_phValue != null &&
+          double.parse(_phValue!) == minPh ||
+          double.parse(_phValue!) == maxPh &&
+          scannedN == N &&
+          scannedP == P &&
+          scannedK == K &&
+          int.parse(_humidity!) == minHumidity) { // Check if humidity meets the minimum requirement
+        recommendedPlants.add(plantData[0]);
+      }
+
+      // Check if the hard-coded pH value falls within the suitable pH range
+      if (_phValue != null &&
+          double.parse(_phValue!) >= minPh &&
+          double.parse(_phValue!) <= maxPh) {
+        suitablePlants.add(plantData[0]);
+      }
     }
 
-    // Check if the hard-coded pH value falls within the suitable pH range
-    if (_phValue != null &&
-        double.parse(_phValue!) >= minPh &&
-        double.parse(_phValue!) <= maxPh) {
-      suitablePlants.add(plantData[0]);
+    if (recommendedPlants.isNotEmpty) {
+      _recommendedPlant = recommendedPlants[0];
+    } else {
+      _recommendedPlant = 'No recommended plants found';
     }
-  }
 
-  if (recommendedPlants.isNotEmpty) {
-    _recommendedCrop = '${recommendedPlants[0]} and ${suitablePlants[1]}'; // Display the first two suitable plants
-  } else if (suitablePlants.isNotEmpty) {
-    _recommendedCrop = suitablePlants[0]; // Get the first suitable plant
-  } else {
-    _recommendedCrop = 'No recommended crops found';
-  }
+    if (suitablePlants.isNotEmpty) {
+      _suitablePlant = suitablePlants[0];
+    } else {
+      _suitablePlant = 'No suitable plants found';
+    }
+
+    // Combine recommended and suitable plant names
+    if (_recommendedPlant != 'No recommended plants found' && _suitablePlant != 'No suitable plants found') {
+      _plantNames = 'Recommended: $_recommendedPlant, Suitable: $_suitablePlant';
+    } else if (_recommendedPlant != 'No recommended plants found') {
+      _plantNames = 'Recommended: $_recommendedPlant';
+    } else if (_suitablePlant != 'No suitable plants found') {
+      _plantNames = 'Suitable: $_suitablePlant';
+    } else {
+      _plantNames = 'No recommended or suitable plants found';
+    }
 
   DatabaseHelper databaseHelper = DatabaseHelper.instance;
   await databaseHelper.insertRecording(
@@ -92,8 +111,8 @@ class _RecordPageState extends State<RecordPage> {
     k: _npk!.split(',')[2],
     humidity: _humidity!,
     temperature: '${_temperature!}°C',
-    plant: _recommendedCrop!.split(' and ')[0],
-    crop: suitablePlants.isNotEmpty ? suitablePlants[1] : '', // Get the first plant from suitablePlants list
+    plant: _recommendedPlant!.split(' and ')[0],
+    crop: suitablePlants.isNotEmpty ? suitablePlants[0] : '', // Get the first plant from suitablePlants list
   );
 }
 
@@ -232,7 +251,7 @@ class _RecordPageState extends State<RecordPage> {
                     ),
                   ),
                   Text(
-                    _recommendedCrop!,
+                    _plantNames!,
                     style: const TextStyle(
                       color: Colors.white,
                     ),
