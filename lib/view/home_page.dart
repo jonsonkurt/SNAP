@@ -148,7 +148,7 @@ class _HomePageState extends State<HomePage> {
                                               ),
                                               child: AlertDialog(
                                                 content: SizedBox(
-                                                  height: 380,
+                                                  height: 410,
                                                   child: Container(
                                                     padding:
                                                         const EdgeInsets.all(
