@@ -1,4 +1,10 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:typed_data';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:snap/model/database_helper.dart';
 import 'package:intl/intl.dart'; // Import the intl package
 
@@ -11,6 +17,9 @@ class RecordPage extends StatefulWidget {
 }
 
 class _RecordPageState extends State<RecordPage> {
+  String? _nScanned;
+  String? _pScanned;
+  String? _kScanned;
   String? _date;
   String? _time;
   String? _phValue;
@@ -21,6 +30,132 @@ class _RecordPageState extends State<RecordPage> {
   String? _suitablePlant;
   String? _plantNames;
   bool _scanningComplete = false;
+  bool _isConnected = false;
+  BluetoothConnection? _connection;
+  bool _isConnecting = true;
+
+  FlutterBluetoothSerial _bluetooth = FlutterBluetoothSerial.instance;
+  bool _connected = false;
+  BluetoothDevice? _connectedDevice;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkBluetooth();
+  }
+
+  void disconnect() {
+    _connection?.close();
+  }
+
+  void _checkBluetooth() async {
+    // Check if Bluetooth is available on the device
+    bool? isAvailable = await _bluetooth.isAvailable;
+
+    if (!isAvailable!) {
+      // ignore: use_build_context_synchronously
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return const AlertDialog(
+            title: Text('Bluetooth Not Available'),
+            content: Text('Bluetooth is not available on this device.'),
+          );
+        },
+      );
+    }
+
+    // Request user to enable Bluetooth
+    bool? isEnabled = await _bluetooth.requestEnable();
+
+    if (!isEnabled!) {
+      // ignore: use_build_context_synchronously
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return const AlertDialog(
+            title: Text('Bluetooth Not Enabled'),
+            content: Text('Please enable Bluetooth to use this feature.'),
+          );
+        },
+      );
+    }
+  }
+
+  Future<void> _initBluetoothConnection() async {
+    try {
+      // Get a list of bonded Bluetooth devices
+      List<BluetoothDevice> bondedDevices =
+          await FlutterBluetoothSerial.instance.getBondedDevices();
+
+      // Find your Arduino device in the list of bonded devices
+      BluetoothDevice? arduinoDevice;
+      for (BluetoothDevice device in bondedDevices) {
+        if (device.name == 'HC-05') {
+          arduinoDevice = device;
+          print('connected');
+          break;
+        }
+      }
+
+      // Check if the Arduino device is found
+      if (arduinoDevice != null) {
+        try {
+          // Use the Arduino device in your Bluetooth connection
+          BluetoothDevice device = arduinoDevice;
+
+          _connection = await BluetoothConnection.toAddress(device.address);
+          // _connection.input.listen(_handleData);
+          print('Connected to the device');
+          setState(() {
+            _isConnected = true;
+          });
+
+          _connection!.input?.listen((List<int> data) {
+            Uint8List uint8ListData = Uint8List.fromList(data);
+            print('Data incoming: ${ascii.decode(uint8ListData)}');
+            String string_with_exclamation = utf8.decode(uint8ListData);
+            String string_without_exclamation =
+                string_with_exclamation.replaceAll(
+                    '!', ''); // Remove the exclamation mark from the string
+            int integer_value = int.parse(string_without_exclamation);
+            double final_nScanned = integer_value / 10;
+            int roundedNScanned = final_nScanned.round();
+
+            print(roundedNScanned);
+            _nScanned = roundedNScanned.toString();
+
+            if (ascii.decode(uint8ListData).contains('!')) {
+              _connection!.finish(); // Closing connection
+              print('Disconnecting by local host');
+            } else {
+              // setState(() {
+              //   _nScanned = ascii.decode(uint8ListData);
+              //   _nScanned = (int.parse(_nScanned!) / 10)
+              //       .toString(); // Divide nitrogen value by 10
+              //   print(_nScanned);
+              // });
+            }
+          }).onDone(() {
+            print('Disconnected by remote request');
+          });
+        } catch (exception) {
+          print('Cannot connect, exception occurred: $exception');
+        }
+      } else {
+        print('Arduino device not found.');
+        // Handle the case when the Arduino device is not found
+      }
+    } catch (ex) {
+      print('Error: $ex');
+    }
+  }
+
+  @override
+  void dispose() {
+    _connection?.close();
+    super.dispose();
+  }
 
   Future<void> _scanSoilQualities() async {
     // Get the current date and time
@@ -30,16 +165,30 @@ class _RecordPageState extends State<RecordPage> {
     String formattedDate = DateFormat('dd-MM-yyyy').format(now);
     String formattedTime = DateFormat('HH:mm').format(now);
 
-    // Implement soil scanning logic here
-    // Once the soil scanning is complete, update the state with the results
+    // Generate random values for phosphorus, potassium, pH, temperature, and humidity
+    final random = Random();
+    final plantData = plantDatabase[random.nextInt(plantDatabase.length)];
+
+    final minPh = plantData[1];
+    final maxPh = plantData[2];
+    final N = _nScanned != null ? int.parse(_nScanned!) : 0;
+    final P = random.nextInt(30) + 1; // Random phosphorus value from 1 to 30
+    final K = random.nextInt(30) + 1; // Random potassium value from 1 to 30
+    final minHumidity = plantData[8];
+
+// Update the state with the generated values
     setState(() {
       _date = formattedDate;
       _time = formattedTime;
-      _phValue = '5.6';
-      _npk = '12, 12, 12';
-      _humidity = '92';
-      _temperature = '24';
-      _scanningComplete = true; // Set the variable to true when scanning is complete
+      _phValue = ((random.nextDouble() * (maxPh - minPh)) + minPh)
+          .round()
+          .toStringAsFixed(1);
+      _nScanned = _nScanned;
+      _pScanned = P.toString();
+      _kScanned = K.toString();
+      _humidity = minHumidity.toString();
+      _temperature = (random.nextDouble() * 20 + 15).toStringAsFixed(2);
+      _scanningComplete = true;
     });
 
     // Perform recommendation based on NPK, pH, and humidity values
@@ -54,18 +203,18 @@ class _RecordPageState extends State<RecordPage> {
       int K = plantData[5];
       int minHumidity = plantData[8]; // Get the minimum required humidity
 
-      List<String> npkValues = _npk!.split(', ');
-      int scannedN = int.parse(npkValues[0]);
-      int scannedP = int.parse(npkValues[1]);
-      int scannedK = int.parse(npkValues[2]);
+      List<String> npkValues = _npk != null ? _npk!.split(', ') : [];
+      int _nScanned = npkValues.length > 0 ? int.parse(npkValues[0]) : 0;
+      int _pScanned = npkValues.length > 1 ? int.parse(npkValues[1]) : 0;
+      int _kScanned = npkValues.length > 2 ? int.parse(npkValues[2]) : 0;
 
-      if (_phValue != null &&
-          double.parse(_phValue!) == minPh ||
+      if (_phValue != null && double.parse(_phValue!) == minPh ||
           double.parse(_phValue!) == maxPh &&
-          scannedN == N &&
-          scannedP == P &&
-          scannedK == K &&
-          int.parse(_humidity!) == minHumidity) { // Check if humidity meets the minimum requirement
+              _nScanned == N &&
+              _pScanned == P &&
+              _kScanned == K &&
+              int.parse(_humidity!) == minHumidity) {
+        // Check if humidity meets the minimum requirement
         recommendedPlants.add(plantData[0]);
       }
 
@@ -80,6 +229,7 @@ class _RecordPageState extends State<RecordPage> {
     if (recommendedPlants.isNotEmpty) {
       _recommendedPlant = recommendedPlants[0];
     } else {
+      // _recommendedPlant = 'No recommended plants found';
       _recommendedPlant = 'No recommended plants found';
     }
 
@@ -90,8 +240,10 @@ class _RecordPageState extends State<RecordPage> {
     }
 
     // Combine recommended and suitable plant names
-    if (_recommendedPlant != 'No recommended plants found' && _suitablePlant != 'No suitable plants found') {
-      _plantNames = 'Recommended: $_recommendedPlant, Suitable: $_suitablePlant';
+    if (_recommendedPlant != 'No recommended plants found' &&
+        _suitablePlant != 'No suitable plants found') {
+      _plantNames =
+          'Recommended: $_recommendedPlant, Suitable: $_suitablePlant';
     } else if (_recommendedPlant != 'No recommended plants found') {
       _plantNames = 'Recommended: $_recommendedPlant';
     } else if (_suitablePlant != 'No suitable plants found') {
@@ -100,21 +252,21 @@ class _RecordPageState extends State<RecordPage> {
       _plantNames = 'No recommended or suitable plants found';
     }
 
-  DatabaseHelper databaseHelper = DatabaseHelper.instance;
-  await databaseHelper.insertRecording(
-    userId: '${DatabaseHelper.loggedInUserId}',
-    date: _date!,
-    time: _time!,
-    ph: _phValue!,
-    n: _npk!.split(',')[0],
-    p: _npk!.split(',')[1],
-    k: _npk!.split(',')[2],
-    humidity: _humidity!,
-    temperature: '${_temperature!}°C',
-    plant: _recommendedPlant!.split(' and ')[0],
-    crop: suitablePlants.isNotEmpty ? suitablePlants[0] : '', // Get the first plant from suitablePlants list
-  );
-}
+    DatabaseHelper databaseHelper = DatabaseHelper.instance;
+    await databaseHelper.insertRecording(
+      userId: '${DatabaseHelper.loggedInUserId}',
+      date: _date!,
+      time: _time!,
+      ph: _phValue!,
+      n: _nScanned!,
+      p: _pScanned!,
+      k: _kScanned!,
+      humidity: _humidity!,
+      temperature: '${_temperature!}°C',
+      plant: _recommendedPlant!.split(' and ')[0],
+      crop: suitablePlants.isNotEmpty ? suitablePlants[0] : '',
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -128,8 +280,32 @@ class _RecordPageState extends State<RecordPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (!_scanningComplete) // Render the button only if scanning is not complete
-              //onPressed: _scanSoilQualities,
+            GestureDetector(
+              onTap: _initBluetoothConnection,
+              child: Container(
+                width: 300,
+                height: 300,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Color(0xFFa5885e),
+                ),
+                child: Center(
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      _isConnected ? "Connected" : "Connect",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 35,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            if (!_scanningComplete)
               GestureDetector(
                 onTap: _scanSoilQualities,
                 child: Container(
@@ -209,7 +385,7 @@ class _RecordPageState extends State<RecordPage> {
                     ),
                   ),
                   Text(
-                    _npk!,
+                    'N: ${_nScanned ?? ''}, P: ${_pScanned ?? ''}, K: ${_kScanned ?? ''}',
                     style: const TextStyle(
                       color: Colors.white,
                     ),

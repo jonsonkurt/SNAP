@@ -426,11 +426,20 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                                               alignment: Alignment.centerLeft,
                                               child: Text(
                                                 recordings.isNotEmpty
-                                                    ? recordings[0]['plant']
+                                                    ? (recordings[0]['plant'] !=
+                                                            "No recommended plants found"
+                                                        ? recordings[0]['plant']
+                                                        : 'No recommended plants found')
                                                     : '-',
-                                                style: const TextStyle(
+                                                style: TextStyle(
                                                   color: Colors.white,
-                                                  fontSize: 25,
+                                                  fontSize: recordings
+                                                              .isNotEmpty &&
+                                                          recordings[0]
+                                                                  ['plant'] ==
+                                                              "No recommended plants found"
+                                                      ? 14
+                                                      : 25,
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),
@@ -444,7 +453,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                                           const Align(
                                             alignment: Alignment.centerLeft,
                                             child: Text(
-                                              "Crop:   ",
+                                              "Suitable:   ",
                                               style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 20,

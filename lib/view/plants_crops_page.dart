@@ -123,7 +123,7 @@ class _PlantsCropsPageState extends State<PlantsCropsPage> {
                                   ),
                                   const SizedBox(height: 5),
                                   SizedBox(
-                                    height: 450,
+                                    height: 500,
                                     width: MediaQuery.of(context).size.width,
                                     child: ListView.builder(
                                       scrollDirection: Axis.vertical,
@@ -149,7 +149,7 @@ class _PlantsCropsPageState extends State<PlantsCropsPage> {
                                                   ),
                                                   child: AlertDialog(
                                                     content: SizedBox(
-                                                      height: 270,
+                                                      height: 320,
                                                       child: Container(
                                                         padding:
                                                             const EdgeInsets
@@ -314,6 +314,17 @@ class _PlantsCropsPageState extends State<PlantsCropsPage> {
                                                             ),
                                                             const SizedBox(
                                                                 height: 10),
+                                                            Center(
+                                                              child:
+                                                                  ElevatedButton(
+                                                                onPressed: () {
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                },
+                                                                child: Text(
+                                                                    'Start Adjusting'),
+                                                              ),
+                                                            ),
                                                           ],
                                                         ),
                                                       ),

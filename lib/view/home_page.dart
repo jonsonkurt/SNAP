@@ -148,7 +148,7 @@ class _HomePageState extends State<HomePage> {
                                               ),
                                               child: AlertDialog(
                                                 content: SizedBox(
-                                                  height: 380,
+                                                  height: 430,
                                                   child: Container(
                                                     padding:
                                                         const EdgeInsets.all(
@@ -385,28 +385,61 @@ class _HomePageState extends State<HomePage> {
                                                       : Colors.black,
                                                 ),
                                               ),
-                                              Center(
-                                                child: Image.asset(
-                                                  recordings[index]['image'],
-                                                  height: 170,
-                                                  width: 170,
-                                                ),
-                                              ),
-                                              Align(
-                                                alignment:
-                                                    Alignment.bottomCenter,
-                                                child: Text(
-                                                  //recommendations[index]['title'],
-                                                  '${recordings[index]['plant']}',
-                                                  style: TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: index % 2 == 0
-                                                        ? Colors.white
-                                                        : Colors.black,
+                                              if (recordings[index]['plant'] ==
+                                                  "No recommended plants found")
+                                                Center(
+                                                  child: Image.asset(
+                                                    '${recordings[index]['image']}',
+                                                    // '${recordings[index]['crop'].toLowerCase()}.png',
+                                                    height: 170,
+                                                    width: 170,
                                                   ),
                                                 ),
-                                              ),
+                                              if (recordings[index]['plant'] ==
+                                                  "No recommended plants found")
+                                                Align(
+                                                  alignment:
+                                                      Alignment.bottomCenter,
+                                                  child: Text(
+                                                    //recommendations[index]['title'],
+                                                    'Suitable Plant: ${recordings[index]['crop']}',
+                                                    style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: index % 2 == 0
+                                                          ? Colors.white
+                                                          : Colors.black,
+                                                    ),
+                                                  ),
+                                                ),
+                                              if (recordings[index]['plant'] !=
+                                                  "No recommended plants found")
+                                                Center(
+                                                  child: Image.asset(
+                                                    recordings[index]['image'],
+                                                    height: 170,
+                                                    width: 170,
+                                                  ),
+                                                ),
+                                              if (recordings[index]['plant'] !=
+                                                  "No recommended plants found")
+                                                Align(
+                                                  alignment:
+                                                      Alignment.bottomCenter,
+                                                  child: Text(
+                                                    //recommendations[index]['title'],
+                                                    '${recordings[index]['plant']}',
+                                                    style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: index % 2 == 0
+                                                          ? Colors.white
+                                                          : Colors.black,
+                                                    ),
+                                                  ),
+                                                ),
                                             ],
                                           ),
                                         ),
