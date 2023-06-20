@@ -78,19 +78,19 @@ class _AdminPageState extends State<AdminPage> {
                         children: [
                           Text(
                             'pH: ${recording['ph']}',
-                            style: const TextStyle(fontSize: 14.0),
+                            style: const TextStyle(fontSize: 13.0),
                           ),
                           Text(
                             'NPK: ${recording['n']}, ${recording['p']}, ${recording['k']} (%)',
-                            style: const TextStyle(fontSize: 14.0),
+                            style: const TextStyle(fontSize: 13.0),
                           ),
                           Text(
                             'Hmd: ${recording['humidity']}',
-                            style: const TextStyle(fontSize: 14.0),
+                            style: const TextStyle(fontSize: 13.0),
                           ),
                           Text(
                             'Temp: ${recording['temperature']}',
-                            style: const TextStyle(fontSize: 14.0),
+                            style: const TextStyle(fontSize: 13.0),
                           ),
                         ],
                       ),
