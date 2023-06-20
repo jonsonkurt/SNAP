@@ -314,6 +314,14 @@ class _PlantsCropsPageState extends State<PlantsCropsPage> {
                                                             ),
                                                             const SizedBox(
                                                                 height: 10),
+                                                                Center(
+                                                              child: ElevatedButton(
+                                                                onPressed: () {
+                                                                  Navigator.pop(context);
+                                                                },
+                                                                child: Text('Start Adjusting'),
+                                                              ),
+                                                            ),
                                                           ],
                                                         ),
                                                       ),
